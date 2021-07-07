@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{% load static %}
+
+{% block css_file %}
+  <link rel="stylesheet" href="{% static "products/offers.css" %}">
+  <link rel="stylesheet" href="{% static "products/includes/header.css" %}">
+{% endblock %}
+{% block page_title %}
+  All Offers
+{% endblock %}
+
+{% block content %}
+  <h1>Monthly Offers</h1>
+    <ul>
+        {% for month in months %}
+            <li><a href="{% url "monthly-deals" month %}">{{ month|title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+ 
+ 
