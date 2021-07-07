@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound , HttpResponseRedirect
 from django.urls import reverse
+from django.template.loader import render_to_string
+
 
 # Create your views here.
 
 monthly_offers = {
-    "Jan" : "New Model MSI Products Coming Soon!" ,
+    "Jan" : "Model MSI New Products Coming Soon!" ,
     "Feb" :  "Zebronic Speaker sales" , 
     "March" : "Iphone deals avilable" ,
     "April" : "MSI Motherboard Offer with ANT Esports mouse kit",
@@ -16,20 +18,15 @@ monthly_offers = {
     "Sep" : "VIVO/OPPO best deals" ,
     "Oct" : "Sony music box deals",
     "Nov" : " Offer upto 50-60% Discount on any products",
-    "Dec" : "End sale "
+    "Dec" : None
 }
 
 def cart(request):
-    list_items = ""
     months = list(monthly_offers.keys())
 
-    for month in months:
-        capitalized_month = month.capitalize()
-        month_path = reverse("monthly-deals", args=[month])
-        list_items += f"<li><a href=\"{month_path}\">{capitalized_month}</a></li>"
-
-    response_data = f"<ul><h1>{list_items}</h1></ul>"
-    return HttpResponse(response_data)
+    return render(request,"products/index.html",{
+        "months": months,
+     })
 
 def monthly_deals_by_number(request, month):
     months = list(monthly_offers.keys())
@@ -44,10 +41,13 @@ def monthly_deals_by_number(request, month):
 def monthly_deals(request, month):
     try:
         product_text = monthly_offers[month]
-        data_deals = f"<h1>{product_text}</h1>"
-        return HttpResponse(data_deals)
-
+        return render(request, "products/offers.html", {
+            "text": product_text ,
+            "month_name": month
+        })
     except:
-        return HttpResponseNotFound("<h1>Page Not found Bro!</h1>")
+        response_data = render_to_string("404.html")
+        return HttpResponseNotFound(response_data)
 
-    return HttpResponse(product_text)
+
+
